@@ -1,0 +1,18 @@
+# Goal
+geometry_msgs/PoseStamped target_pose
+float32 tx
+float32 ty
+float32 tz
+float32 tyaw
+---
+# Result
+bool success
+float32 t_total
+---
+# Feedback
+std_msgs/Header header
+float32 t_act
+std_msgs/Float64MultiArray x
+std_msgs/Float64MultiArray y
+std_msgs/Float64MultiArray z
+std_msgs/Float64MultiArray yaw

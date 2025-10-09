@@ -1,0 +1,145 @@
+/drone:
+  imu:
+    link_name: base_link
+    frame_id: base_link
+    topic: /imu/data
+    update_rate: 200
+    remove_gravity: false
+    # Ruido IMU (0 = ideal)
+    gyro_noise_stddev: 0.0           # rad/s
+    accel_noise_stddev: 0.0          # m/s^2
+    gyro_bias: 0.0                   # rad/s
+    accel_bias: 0.0                  # m/s^2
+
+  barometer:
+    link_name: base_link
+    frame_id: base_link
+    topic: /baro/pressure
+    update_rate: 50
+    # Modelo isoterma
+    ref_altitude: 0.0                # m
+    p0: 101325.0                     # Pa# =========================
+#     CONFIGURACIÓN
+# =========================
+
+Hardware:
+  carcasa:
+    peso_base: 1.0           # kg
+    peso_brazos: 0.1         # kg (por brazo)
+    peso_motor: 0.05         # kg (por motor)
+    longitud_brazo: 0.2      # metros
+    altura_base: 0.05        # metros
+    radio_motor: 0.02        # metros
+
+  helices:
+    radio_helice: 0.05       # metros
+    coeficiente_fuerza: 1.1  # N·s²/m⁴
+    coeficiente_par: 0.01    # N·m·s²/m⁴
+    sentido_giro:            # 1 = CW, -1 = CCW (alternado)
+      - 1
+      - -1
+      - 1
+      - -1
+
+Software:
+  # --- Bloques "humanos" para referencia/edición ---
+  imu:
+    link_name: base_link
+    frame_id: base_link
+    topic: /imu/data
+    update_rate: 200
+    remove_gravity: false
+    gyro_noise_stddev: 0.0           # rad/s
+    accel_noise_stddev: 0.0          # m/s^2
+    gyro_bias: 0.0                   # rad/s
+    accel_bias: 0.0                  # m/s^2
+
+  barometer:
+    link_name: base_link
+    frame_id: base_link
+    topic: /baro/pressure
+    update_rate: 50
+    ref_altitude: 0.0                # m
+    p0: 101325.0                     # Pa
+    T: 288.15                        # K
+    noise_stddev: 0.0                # Pa
+    bias: 0.0                        # Pa
+
+  magnetometer:
+    link_name: base_link
+    frame_id: base_link
+    topic: /mag/field
+    update_rate: 100
+    B_world: [2.0e-5, 0.0, -4.0e-5]  # Tesla
+    noise_stddev: 0.0                # Tesla
+    bias: 0.0                        # Tesla
+
+  ground_truth:
+    link_name: base_link
+    frame_id: world
+    topic: /ground_truth/pose
+    update_rate: 100
+
+
+# =========================
+#     PARÁMETROS ROS 2
+# =========================
+# Todo lo de "Software" exportado como parámetros reales que consumen tus plugins/nodos.
+
+"/**":
+  ros__parameters:
+
+    # ===== IMU =====
+    imu.link_name: base_link
+    imu.frame_id: base_link
+    imu.topic: /imu/data
+    imu.update_rate: 200
+    imu.remove_gravity: false
+    imu.gyro_noise_stddev: 0.0
+    imu.accel_noise_stddev: 0.0
+    imu.gyro_bias: 0.0
+    imu.accel_bias: 0.0
+
+    # ===== Barómetro =====
+    barometer.link_name: base_link
+    barometer.frame_id: base_link
+    barometer.topic: /baro/pressure
+    barometer.update_rate: 50
+    barometer.ref_altitude: 0.0
+    barometer.p0: 101325.0
+    barometer.T: 288.15
+    barometer.noise_stddev: 0.0
+    barometer.bias: 0.0
+
+    # ===== Magnetómetro =====
+    magnetometer.link_name: base_link
+    magnetometer.frame_id: base_link
+    magnetometer.topic: /mag/field
+    magnetometer.update_rate: 100
+    # Puedes usar vector B_world o Bx/By/Bz individuales
+    magnetometer.B_world: [2.0e-5, 0.0, -4.0e-5]
+    magnetometer.noise_stddev: 0.0
+    magnetometer.bias: 0.0
+
+    # ===== Ground Truth =====
+    ground_truth.link_name: base_link
+    ground_truth.frame_id: world
+    ground_truth.topic: /ground_truth/pose
+    ground_truth.update_rate: 100
+
+    T: 288.15                        # K
+    # Ruido (0 = ideal)
+    noise_stddev: 0.0                # Pa
+    bias: 0.0                        # Pa
+
+    frequency: 400.0
+    gyro_bias_time_constant: 0.0      # o 10.0 si quieres “aprender” sesgo en reposo
+    rp.comp_alpha: 0.98               # roll/pitch complementario
+    rp.gravity_tol: 0.5               # m/s^2
+    yaw.comp_alpha: 0.98
+    mag.declination_rad: 0.0
+    topics.imu: /imu/data
+    topics.baro: /baro/pressure
+    topics.mag: /mag/field
+    topics.R: /R
+    topics.out: /est/pose

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<robot name="my_quadracopter" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Materiales -->
+  <material name="gray"><color rgba="0.5 0.5 0.5 1.0"/></material>
+  <material name="black"><color rgba="0.0 0.0 0.0 1.0"/></material>
+  <material name="blue"><color rgba="0.0 0.0 1.0 1.0"/></material>
+
+  <!-- Cuerpo central -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0.7853"/>
+      <geometry><box size="0.2 0.2 0.05"/></geometry>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.2 0.2 0.05"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Macro de brazo con motor -->
+  <xacro:macro name="arm_with_motor" params="name parent dx dy yaw">
+    <xacro:property name="arm_length" value="0.2"/>
+    <xacro:property name="ox" value="${dx * 0.5}"/>
+    <xacro:property name="oy" value="${dy * 0.5}"/>
+    <xacro:property name="mx" value="${dx}"/>        <!-- 🔵 desplazamiento respecto al centro del brazo -->
+    <xacro:property name="my" value="${dy}"/>
+
+    <!-- Brazo -->
+    <link name="${name}_arm">
+      <visual>
+        <origin xyz="${ox} ${oy} 0" rpy="1.5708 0 ${yaw}"/>
+        <geometry>
+          <cylinder length="${arm_length}" radius="0.01"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="${ox} ${oy} 0" rpy="1.5708 0 ${yaw}"/>
+        <geometry>
+          <cylinder length="${arm_length}" radius="0.01"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="joint_${name}_arm" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_arm"/>
+      <origin xyz="${ox} ${oy} 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Motor -->
+    <link name="${name}_motor">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.02" radius="0.02"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.02" radius="0.02"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="joint_${name}_motor" type="continuous">
+      <parent link="${name}_arm"/>
+      <child link="${name}_motor"/>
+      <origin xyz="${mx} ${my} 0.02" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.01" friction="1.5"/>
+    </joint>
+
+  </xacro:macro>
+
+
+
+
+  <!-- Cuatro brazos con motores -->
+  <xacro:arm_with_motor name="front_left"   parent="base_link" dx="-0.2" dy="0" yaw="1.5708"/>
+  <xacro:arm_with_motor name="front_right"  parent="base_link" dx="0" dy="0.2" yaw="0"/>
+  <xacro:arm_with_motor name="back_left"   parent="base_link" dx="0" dy="-0.2" yaw="0"/>
+  <xacro:arm_with_motor name="back_right"  parent="base_link" dx="0.2" dy="0" yaw="1.5708"/>
+
+
+
+
+
+
+
+
+
+
+  <gazebo>
+    <plugin name="wrenches_plugin" filename="libwrenches_plugin.so">
+      <link_name_motor1>front_left_motor</link_name_motor1>
+      <topic_motor1>/drone/front_left_motor</topic_motor1>
+
+      <link_name_motor2>front_right_motor</link_name_motor2>    <!-- link_name_motor2 es el texto que está escrito entre "" en el plugin-->
+      <topic_motor2>/drone/front_right_motor</topic_motor2>     <!-- topic1 es el texto que está escrito entre "" en el plugin-->
+
+      <link_name_motor3>back_left_motor</link_name_motor3>
+      <topic_motor3>/drone/back_left_motor</topic_motor3>
+
+      <link_name_motor4>back_right_motor</link_name_motor4>
+      <topic_motor4>/drone/back_right_motor</topic_motor4>
+    </plugin>
+
+
+
+    <plugin name="imu_plugin" filename="libimu_plugin.so">
+      <link_name_imu>base_link</link_name_imu>
+      <frame_id_imu>base_link</frame_id_imu>
+      <topic_imu>/imu/data</topic_imu>
+      <update_rate_imu>200</update_rate_imu>           <!-- pick any rate; 0 = every sim tick -->
+      <remove_gravity_imu>false</remove_gravity_imu>
+      <ros>
+        <namespace>/drone</namespace>          <!-- optional -->
+      </ros>
+    </plugin>
+  </gazebo>
+  
+</robot>
