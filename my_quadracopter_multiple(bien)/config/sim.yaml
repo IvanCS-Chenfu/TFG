@@ -1,0 +1,4 @@
+number_of_drones: 1         # cuantos drones
+area_size: [20.0, 10.0]       # [ancho, largo] rectángulo de aparición aleatoria
+z: 0.5                         # altura spawn
+use_random_spawn: true

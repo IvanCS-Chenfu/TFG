@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<robot name="my_quadracopter" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Materiales -->
+  <material name="gray"><color rgba="0.5 0.5 0.5 1.0"/></material>
+  <material name="black"><color rgba="0.0 0.0 0.0 1.0"/></material>
+  <material name="blue"><color rgba="0.0 0.0 1.0 1.0"/></material>
+
+  <!-- Cuerpo central -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.2 0.2 0.05"/></geometry>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.2 0.2 0.05"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Macro de brazo con motor -->
+  <xacro:macro name="arm_with_motor" params="name parent yaw arm_length">
+    <xacro:property name="ox" value="${0.5 * arm_length * cos(yaw)}"/>
+    <xacro:property name="oy" value="${0.5 * arm_length * sin(yaw)}"/>
+    <xacro:property name="mx" value="${arm_length * cos(yaw)}"/>
+    <xacro:property name="my" value="${arm_length * sin(yaw)}"/>
+
+    <link name="${name}_arm">
+      <visual>
+        <origin xyz="${ox} ${oy} 0" rpy="${pi/2} 0 ${-1 * yaw}"/>
+        <geometry><cylinder length="${arm_length}" radius="0.01"/></geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="${ox} ${oy} 0" rpy="${pi/2} 0 ${-1 * yaw}"/>
+        <geometry><cylinder length="${arm_length}" radius="0.01"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="joint_${name}_arm" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_arm"/>
+      <origin xyz="${ox} ${oy} 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${name}_motor">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry><cylinder length="0.02" radius="0.02"/></geometry>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry><cylinder length="0.02" radius="0.02"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="joint_${name}_motor" type="continuous">
+      <parent link="${name}_arm"/>
+      <child link="${name}_motor"/>
+      <origin xyz="${mx} ${my} 0.02" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.01" friction="1.5"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Cuatro brazos con motores -->
+  <xacro:arm_with_motor name="front_left"  parent="base_link" yaw="0.7854"  arm_length="0.2"/>
+  <xacro:arm_with_motor name="front_right" parent="base_link" yaw="-0.7854" arm_length="0.2"/>
+  <xacro:arm_with_motor name="back_left"   parent="base_link" yaw="2.3562"  arm_length="0.2"/>
+  <xacro:arm_with_motor name="back_right"  parent="base_link" yaw="-2.3562" arm_length="0.2"/>
+
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.005 0.02 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <!-- Articulación fija para unirla al robot -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.1 0 0.035" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo>
+    <!-- Wrench/motores -->
+    <plugin name="wrenches_plugin" filename="libwrenches_plugin.so">
+      <link_name_motor1>front_left_motor</link_name_motor1>
+      <topic_motor1>__NS__/motor/fl</topic_motor1>
+
+      <link_name_motor2>front_right_motor</link_name_motor2>
+      <topic_motor2>__NS__/motor/fr</topic_motor2>
+
+      <link_name_motor3>back_left_motor</link_name_motor3>
+      <topic_motor3>__NS__/motor/bl</topic_motor3>
+
+      <link_name_motor4>back_right_motor</link_name_motor4>
+      <topic_motor4>__NS__/motor/br</topic_motor4>
+      <!-- este plugin es “puro” (sin <ros>), así que usamos tópicos absolutos con __NS__ -->
+    </plugin>
+
+    <!-- IMU -->
+    <plugin name="imu_plugin" filename="libimu_plugin.so">
+      <link_name_imu>base_link</link_name_imu>
+      <frame_id_imu>__FRAME_PREFIX__base_link</frame_id_imu>
+      <topic_imu>__NS__/sensor/imu</topic_imu>
+      <update_rate_imu>200</update_rate_imu>
+      <remove_gravity_imu>false</remove_gravity_imu>
+      <ros><namespace>__NS__</namespace></ros>
+    </plugin>
+
+    <!-- Barómetro -->
+    <plugin name="barometer_plugin" filename="libbarometer_plugin.so">
+      <link_name_baro>base_link</link_name_baro>
+      <frame_id_baro>__FRAME_PREFIX__base_link</frame_id_baro>
+      <topic_baro>__NS__/sensor/baro</topic_baro>
+      <update_rate_baro>50</update_rate_baro>
+      <ref_altitude_baro>0.0</ref_altitude_baro>
+      <p0_baro>101325.0</p0_baro>
+      <T_baro>288.15</T_baro>
+      <ros><namespace>__NS__</namespace></ros>
+    </plugin>
+
+    <!-- Magnetómetro -->
+    <plugin name="magnetometer_plugin" filename="libmagnetometer_plugin.so">
+      <link_name_mag>base_link</link_name_mag>
+      <frame_id_mag>__FRAME_PREFIX__base_link</frame_id_mag>
+      <topic_mag>__NS__/sensor/mag</topic_mag>
+      <update_rate_mag>100</update_rate_mag>
+      <Bx_world>2.0e-5</Bx_world><By_world>0.0</By_world><Bz_world>-4.0e-5</Bz_world>
+      <ros><namespace>__NS__</namespace></ros>
+    </plugin>
+
+    <!-- Ground truth -->
+    <plugin name="ground_truth_plugin" filename="libground_truth_plugin.so">
+      <link_name_gt>base_link</link_name_gt>
+      <frame_id_gt>world</frame_id_gt>
+      <topic_gt>__NS__/ground_truth/pose</topic_gt>
+      <update_rate_gt>100</update_rate_gt>
+      <param_ns>ground_truth</param_ns>
+      <ros><namespace>__NS__</namespace></ros>
+    </plugin>
+  </gazebo>
+  
+
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="sensor/camera" always_on="true" update_rate="30">
+      <pose>0 0 0 0 0 0</pose>
+      <camera>
+        <!-- FOV ~ 80° -->
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>50.0</far>
+        </clip>
+      </camera>
+
+      <!-- Plugin ROS que publica /image_raw y /camera_info -->
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <!-- Mantén tu convención de namespaces -->
+        <robotNamespace>__NS__</robotNamespace>
+
+        <!-- Nombres de tópicos relativos al namespace -->
+        <cameraName>camera</cameraName>
+        <imageTopicName>__NS__/sensor/camera/image_raw</imageTopicName>
+        <cameraInfoTopicName>__NS__/sensor/camera/camera_info</cameraInfoTopicName>
+
+        <!-- Frame -->
+        <frameName>__FRAME_PREFIX__camera_link</frameName>
+
+        <!-- Opcionales útiles -->
+        <hackBaseline>0.0</hackBaseline>
+        <CxPrime>0</CxPrime>
+        <Cx>0</Cx>
+        <Cy>0</Cy>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

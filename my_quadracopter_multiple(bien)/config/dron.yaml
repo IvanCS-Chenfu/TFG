@@ -1,0 +1,23 @@
+carcasa:
+  peso_base: 1.0           # kg
+  peso_brazos: 0.1         # kg (por brazo)
+  peso_motor: 0.05         # kg (por motor)
+  longitud_brazo: 0.2      # metros
+  altura_base: 0.05        # metros
+  radio_motor: 0.02        # metros
+
+helices:
+  radio_helice: 0.05       # metros
+  coeficiente_fuerza: 1.1  # N·s²/m⁴
+  coeficiente_par: 0.01    # N·m·s²/m⁴
+  sentido_giro:            # 1 = CW, -1 = CCW (alternado)
+    - 1
+    - -1
+    - 1
+    - -1
+
+plugin:
+  intensidad_ruido: 0.02         # fuerza aleatoria ±N
+  coeficiente_pwm_w: 0.05        # rad/s por unidad de PWM
+  frecuencia_actualizacion: 100  # Hz
+  max_pwm: 255                   # valor PWM máximo absoluto
