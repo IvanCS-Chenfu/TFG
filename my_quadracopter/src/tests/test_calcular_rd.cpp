@@ -38,11 +38,11 @@ public:
     snap_zero_ = this->declare_parameter<bool>("snap_zero", true);
 
     // Publisher
-    pub_R_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/R_desired", 10);
+    pub_R_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("tray_avpt/R_desired", 10);
 
     // Sub: Fuerzas -> A
     sub_F_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
-      "/Fuerzas", rclcpp::QoS(50),
+      "tray_avpt/Fuerzas", rclcpp::QoS(50),
       [this](geometry_msgs::msg::Vector3Stamped::ConstSharedPtr msg){
         A_ = {msg->vector.x, msg->vector.y, msg->vector.z};
         have_A_ = true;
@@ -51,7 +51,7 @@ public:
 
     // Sub: feedback acción (x,y,z,yaw como MultiArray)
     sub_fb_ = this->create_subscription<FeedbackMsg>(
-      "/poly3_traj/_action/feedback", rclcpp::QoS(50),
+      "poly3_traj/_action/feedback", rclcpp::QoS(50),
       [this](FeedbackMsg::ConstSharedPtr fb){
         auto get_vec = [](const std_msgs::msg::Float64MultiArray &a, int upto=4){
           V3 v{0,0,0};

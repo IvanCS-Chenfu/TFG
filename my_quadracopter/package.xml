@@ -25,6 +25,10 @@
   <exec_depend>gazebo_ros</exec_depend>
   <build_depend>yaml-cpp</build_depend>
   <exec_depend>yaml-cpp</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>python3-pyqt5</exec_depend>
 
   <build_depend>rosidl_default_generators</build_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>

@@ -24,7 +24,7 @@ public:
     // === Parámetros SDF (por compatibilidad) ===
     link_name_      = sdf->Get<std::string>("link_name_imu",   "imu_link").first;
     frame_id_       = sdf->Get<std::string>("frame_id_imu",    link_name_).first;
-    topic_          = sdf->Get<std::string>("topic_imu",       "/imu/data").first;
+    topic_          = sdf->Get<std::string>("topic_imu",       "sensor/imu").first;
     update_rate_    = sdf->Get<double>("update_rate_imu",      200.0).first;
     remove_gravity_ = sdf->Get<bool>("remove_gravity_imu",     false).first; // ignorado (publicamos f=a-g)
     param_ns_       = sdf->Get<std::string>("param_ns", "imu").first;
@@ -35,7 +35,7 @@ public:
       s = (a == std::string::npos) ? "" : s.substr(a, b - a + 1);
     };
     trim(link_name_); trim(frame_id_); trim(topic_); trim(param_ns_);
-    if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
+    //if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
 
     // === Parámetros ROS 2 (sobrescriben SDF si existen) ===
     getParam("link_name",      link_name_);

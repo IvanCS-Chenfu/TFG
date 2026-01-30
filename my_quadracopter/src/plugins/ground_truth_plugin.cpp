@@ -25,9 +25,9 @@ public:
     // Defaults SDF (retro-compat)
     link_name_    = sdf->Get<std::string>("link_name_gt", "base_link").first;
     frame_id_     = sdf->Get<std::string>("frame_id_gt",  "world").first;
-    topic_pose_   = sdf->Get<std::string>("topic_gt",     "/ground_truth/pose").first;
-    topic_vel_    = sdf->Get<std::string>("topic_vel_gt", "/ground_truth/vel").first;
-    topic_acc_    = sdf->Get<std::string>("topic_acc_gt", "/ground_truth/acc").first;
+    topic_pose_   = sdf->Get<std::string>("topic_gt",     "ground_truth/pose").first;
+    topic_vel_    = sdf->Get<std::string>("topic_vel_gt", "ground_truth/vel").first;
+    topic_acc_    = sdf->Get<std::string>("topic_acc_gt", "ground_truth/acc").first;
     update_rate_  = sdf->Get<double>("update_rate_gt",    100.0).first;
 
     // Namespace YAML
@@ -40,8 +40,8 @@ public:
     };
     trim(link_name_); trim(frame_id_); trim(topic_pose_); trim(topic_vel_); trim(topic_acc_); trim(param_ns_);
     if (!topic_pose_.empty() && topic_pose_.front() != '/') topic_pose_ = "/" + topic_pose_;
-    if (!topic_vel_.empty()  && topic_vel_.front()  != '/') topic_vel_  = "/" + topic_vel_;
-    if (!topic_acc_.empty()  && topic_acc_.front()  != '/') topic_acc_  = "/" + topic_acc_;
+    //if (!topic_vel_.empty()  && topic_vel_.front()  != '/') topic_vel_  = "/" + topic_vel_;
+    //if (!topic_acc_.empty()  && topic_acc_.front()  != '/') topic_acc_  = "/" + topic_acc_;
 
     // Parámetros YAML (sobrescriben si existen)
     getParam("link_name",       link_name_);

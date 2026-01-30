@@ -11,9 +11,9 @@ public:
   ImuQuatSanityTimerNode() : rclcpp::Node("imu_quat_sanity_timer_node")
   {
     // Parámetros
-    topic_imu_  = declare_parameter<std::string>("topic_imu", "/imu/data");
-    topic_acc_  = declare_parameter<std::string>("topic_quat_from_acc",  "/test/quat_from_acc");
-    topic_gyro_ = declare_parameter<std::string>("topic_quat_from_gyro", "/test/quat_from_gyro");
+    topic_imu_  = declare_parameter<std::string>("topic_imu", "sensor/imu");
+    topic_acc_  = declare_parameter<std::string>("topic_quat_from_acc",  "test/quat_from_acc");
+    topic_gyro_ = declare_parameter<std::string>("topic_quat_from_gyro", "test/quat_from_gyro");
     g_          = declare_parameter<double>("gravity", 9.80665);
     acc_tol_    = declare_parameter<double>("acc_norm_tolerance", 3.0); // m/s^2
     freq_hz_    = declare_parameter<double>("frequency", 400.0);        // Hz de integración

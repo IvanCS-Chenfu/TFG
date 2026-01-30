@@ -74,7 +74,7 @@ public:
   {
     // Suscripción correcta a PoseStamped
     pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-      "/ground_truth/pose", rclcpp::SensorDataQoS(),
+      "ground_truth/pose", rclcpp::SensorDataQoS(),
       [this](geometry_msgs::msg::PoseStamped::ConstSharedPtr msg){
         last_pose_ = msg->pose;  // guardamos solo el pose
         have_pose_ = true;

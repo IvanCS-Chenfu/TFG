@@ -38,11 +38,11 @@ public:
     use_external_R_ = declare_parameter<bool>("alt.use_external_R", false);
 
     // ===== Tópicos =====
-    topic_imu_  = declare_parameter<std::string>("topics.imu",  "/imu/data");
-    topic_baro_ = declare_parameter<std::string>("topics.baro", "/baro/pressure");
-    topic_mag_  = declare_parameter<std::string>("topics.mag",  "/mag/field");
-    topic_R_    = declare_parameter<std::string>("topics.R",    "/R"); // opcional
-    topic_out_  = declare_parameter<std::string>("topics.out",  "/est/pose");
+    topic_imu_  = declare_parameter<std::string>("topics.imu",  "sensor/imu");
+    topic_baro_ = declare_parameter<std::string>("topics.baro", "sensor/baro");
+    topic_mag_  = declare_parameter<std::string>("topics.mag",  "sensor/mag");
+    topic_R_    = declare_parameter<std::string>("topics.R",    "R"); // opcional
+    topic_out_  = declare_parameter<std::string>("topics.out",  "est/pose");
 
     // ===== Pub/Sub =====
     pub_pose_ = create_publisher<geometry_msgs::msg::Pose>(topic_out_, rclcpp::QoS(10));

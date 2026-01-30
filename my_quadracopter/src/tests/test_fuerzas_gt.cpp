@@ -28,27 +28,27 @@ public:
     gI_.z = this->declare_parameter<double>("g_z", 9.81);
 
     // Nombre de la acción para localizar el topic de feedback
-    action_name_ = this->declare_parameter<std::string>("action_name", "/poly3_traj");
+    action_name_ = this->declare_parameter<std::string>("action_name", "poly3_traj");
     feedback_topic_ = action_name_ + "/_action/feedback";
 
-    pub_F_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("Fuerzas", 10);
+    pub_F_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("tray_avpt/Fuerzas", 10);
 
     sub_pose_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-      "/ground_truth/pose", rclcpp::SensorDataQoS(),
+      "ground_truth/pose", rclcpp::SensorDataQoS(),
       [this](geometry_msgs::msg::PoseStamped::ConstSharedPtr msg){
         p_.x = msg->pose.position.x; p_.y = msg->pose.position.y; p_.z = msg->pose.position.z;
         have_p_ = true; compute_and_publish();
       });
 
     sub_vel_ = this->create_subscription<geometry_msgs::msg::TwistStamped>(
-      "/ground_truth/vel", rclcpp::SensorDataQoS(),
+      "ground_truth/vel", rclcpp::SensorDataQoS(),
       [this](geometry_msgs::msg::TwistStamped::ConstSharedPtr msg){
         v_.x = msg->twist.linear.x; v_.y = msg->twist.linear.y; v_.z = msg->twist.linear.z;
         have_v_ = true; compute_and_publish();
       });
 
     sub_acc_ = this->create_subscription<geometry_msgs::msg::AccelStamped>(
-      "/ground_truth/acc", rclcpp::SensorDataQoS(),
+      "ground_truth/acc", rclcpp::SensorDataQoS(),
       [this](geometry_msgs::msg::AccelStamped::ConstSharedPtr msg){
         a_gt_.x = msg->accel.linear.x; a_gt_.y = msg->accel.linear.y; a_gt_.z = msg->accel.linear.z;
         have_a_gt_ = true; compute_and_publish();

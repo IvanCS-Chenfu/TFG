@@ -15,10 +15,10 @@ public:
     kt_ = this->declare_parameter<double>("kt", 1.0);  // torque gain
 
     // Create publishers for each motor topic
-    pub_front_ = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/front_right_motor", 10);
-    pub_back_  = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/back_left_motor", 10);
-    pub_left_  = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/front_left_motor", 10);
-    pub_right_ = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/back_right_motor", 10);
+    pub_front_ = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/motor/fl", 10);
+    pub_back_  = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/motor/fr", 10);
+    pub_left_  = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/motor/bl", 10);
+    pub_right_ = this->create_publisher<geometry_msgs::msg::Wrench>("/drone/motor/br", 10);
 
     // Subscribe to pwm_data (expects 4 elements: [front, back, left, right])
     sub_pwm_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(

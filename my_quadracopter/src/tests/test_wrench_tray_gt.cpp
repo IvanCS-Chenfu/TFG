@@ -29,15 +29,15 @@ public:
     clamp_nonneg_ = declare_parameter<bool>("clamp_nonnegative", false);
 
     // Tópicos de entrada
-    topic_tau_ = declare_parameter<std::string>("topics.tau", "/Torques");
-    topic_F_   = declare_parameter<std::string>("topics.F",   "/Fuerzas");
-    topic_R_   = declare_parameter<std::string>("topics.R",   "/R");
+    topic_tau_ = declare_parameter<std::string>("topics.tau", "tray_avpt/Torques");
+    topic_F_   = declare_parameter<std::string>("topics.F",   "tray_avpt/Fuerzas");
+    topic_R_   = declare_parameter<std::string>("topics.R",   "R");
 
     // Tópicos de salida (Wrench por motor)
-    topic_m1_ = declare_parameter<std::string>("topic_motor1", "/drone/front_left_motor");  // /drone/
-    topic_m2_ = declare_parameter<std::string>("topic_motor2", "/drone/front_right_motor");
-    topic_m3_ = declare_parameter<std::string>("topic_motor3", "/drone/back_left_motor");
-    topic_m4_ = declare_parameter<std::string>("topic_motor4", "/drone/back_right_motor");
+    topic_m1_ = declare_parameter<std::string>("topic_motor1", "motor/fl");  // /drone/
+    topic_m2_ = declare_parameter<std::string>("topic_motor2", "motor/fr");
+    topic_m3_ = declare_parameter<std::string>("topic_motor3", "motor/bl");
+    topic_m4_ = declare_parameter<std::string>("topic_motor4", "motor/br");
 
     pub_m1_ = create_publisher<geometry_msgs::msg::Wrench>(topic_m1_, 10);
     pub_m2_ = create_publisher<geometry_msgs::msg::Wrench>(topic_m2_, 10);

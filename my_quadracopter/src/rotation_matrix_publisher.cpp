@@ -10,8 +10,8 @@
 class RotationMatrixPublisher : public rclcpp::Node {
 public:
   RotationMatrixPublisher() : rclcpp::Node("rotation_matrix_publisher") {
-    topic_pose_in_  = declare_parameter<std::string>("topics.pose_in", "/ground_truth/pose");
-    topic_R_out_    = declare_parameter<std::string>("topics.R_out",   "/R");
+    topic_pose_in_  = declare_parameter<std::string>("topics.pose_in", "ground_truth/pose");
+    topic_R_out_    = declare_parameter<std::string>("topics.R_out",   "R");
     fallback_pose_  = declare_parameter<bool>("fallback_pose", false); // <- escucha Pose si true
 
     // Publisher
@@ -51,7 +51,7 @@ private:
   void publishFromQuat(const geometry_msgs::msg::Quaternion &qmsg) {
     double qw = qmsg.w, qx = qmsg.x, qy = qmsg.y, qz = qmsg.z;
     
-    RCLCPP_INFO(this->get_logger(), "q = [%.3f, %.3f, %.3f, %.3f]", qx, qy, qz, qw);
+    //RCLCPP_INFO(this->get_logger(), "q = [%.3f, %.3f, %.3f, %.3f]", qx, qy, qz, qw);
     
     // Normaliza por seguridad
     const double n = std::sqrt(qw*qw + qx*qx + qy*qy + qz*qz);

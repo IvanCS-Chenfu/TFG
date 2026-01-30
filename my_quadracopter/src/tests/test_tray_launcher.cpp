@@ -10,7 +10,7 @@ class Poly3TrajLauncher : public rclcpp::Node {
 public:
   Poly3TrajLauncher() : Node("poly3_traj_launcher") {
     // Parámetros (idénticos al CLI que usabas)
-    action_name_ = this->declare_parameter<std::string>("action_name", "/poly3_traj");
+    action_name_ = this->declare_parameter<std::string>("action_name", "/drone_0/poly3_traj");
     goal_x_ = this->declare_parameter<double>("goal_x", 3.0);
     goal_y_ = this->declare_parameter<double>("goal_y", 2.0);
     goal_z_ = this->declare_parameter<double>("goal_z", 1.0);

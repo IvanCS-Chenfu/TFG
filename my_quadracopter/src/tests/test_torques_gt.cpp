@@ -83,10 +83,10 @@ public:
   SO3TorqueController() : rclcpp::Node("so3_torque_controller")
   {
     // Topics (configurables)
-    topic_Rd_ = declare_parameter<std::string>("topics.Rd", "/R_desired");
-    topic_R_  = declare_parameter<std::string>("topics.R",  "/R");
-    topic_vel_= declare_parameter<std::string>("topics.vel","/ground_truth/vel");
-    topic_tau_= declare_parameter<std::string>("topics.tau","Torques");
+    topic_Rd_ = declare_parameter<std::string>("topics.Rd", "tray_avpt/R_desired");
+    topic_R_  = declare_parameter<std::string>("topics.R",  "R");
+    topic_vel_= declare_parameter<std::string>("topics.vel","ground_truth/vel");
+    topic_tau_= declare_parameter<std::string>("topics.tau","tray_avpt/Torques");
 
     // Ganancias (escalares o por-eje)
     kR_  = declare_parameter<double>("gains.kR", 1.0);
@@ -206,8 +206,8 @@ private:
     // w_B = R^T * w_world
     Vec3 wB = R_.T() * w_world_;
 
-    RCLCPP_INFO(this->get_logger(), "RdT = \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n", RdT.m[0][0], RdT.m[0][1], RdT.m[0][2], RdT.m[1][0], RdT.m[1][1], RdT.m[1][2], RdT.m[2][0], RdT.m[2][1], RdT.m[2][2]);
-    RCLCPP_INFO(this->get_logger(), "R_ = \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n", R_.m[0][0], R_.m[0][1], R_.m[0][2], R_.m[1][0], R_.m[1][1], R_.m[1][2], R_.m[2][0], R_.m[2][1], R_.m[2][2]);
+    //RCLCPP_INFO(this->get_logger(), "RdT = \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n", RdT.m[0][0], RdT.m[0][1], RdT.m[0][2], RdT.m[1][0], RdT.m[1][1], RdT.m[1][2], RdT.m[2][0], RdT.m[2][1], RdT.m[2][2]);
+    //RCLCPP_INFO(this->get_logger(), "R_ = \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n", R_.m[0][0], R_.m[0][1], R_.m[0][2], R_.m[1][0], R_.m[1][1], R_.m[1][2], R_.m[2][0], R_.m[2][1], R_.m[2][2]);
 
     //RCLCPP_INFO(this->get_logger(), "(RdT*R_) = \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n [%.3f, %.3f, %.3f] \n", (RdT*R_).m[0][0], (RdT*R_).m[0][1], (RdT*R_).m[0][2], (RdT*R_).m[1][0], (RdT*R_).m[1][1], (RdT*R_).m[1][2], (RdT*R_).m[2][0], (RdT*R_).m[2][1], (RdT*R_).m[2][2]);
 
@@ -230,7 +230,7 @@ private:
     Vec3 JwB = J_mul(wB);
     Vec3 tau = (eR * (-kR_)) + (ew * (-kW_)) + JRTRd_dO + cross(wB, JwB);
 
-    RCLCPP_INFO(this->get_logger(), "eR = [%.3f, %.3f, %.3f],  ew = [%.3f, %.3f, %.3f]", eR.x, eR.y, eR.z, ew.x, ew.y, ew.z);
+    //RCLCPP_INFO(this->get_logger(), "eR = [%.3f, %.3f, %.3f],  ew = [%.3f, %.3f, %.3f]", eR.x, eR.y, eR.z, ew.x, ew.y, ew.z);
 
     geometry_msgs::msg::Vector3Stamped out;
     out.header.stamp = this->now();

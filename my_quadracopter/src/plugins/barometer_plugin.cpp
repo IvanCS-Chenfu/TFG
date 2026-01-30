@@ -24,7 +24,7 @@ public:
     // SDF defaults
     link_name_   = sdf->Get<std::string>("link_name_baro", "base_link").first;
     frame_id_    = sdf->Get<std::string>("frame_id_baro",  link_name_).first;
-    topic_       = sdf->Get<std::string>("topic_baro",     "/baro/pressure").first;
+    topic_       = sdf->Get<std::string>("topic_baro",     "sensor/baro").first;
     update_rate_ = sdf->Get<double>("update_rate_baro",    50.0).first;
 
     ref_alt_     = sdf->Get<double>("ref_altitude_baro",   0.0).first;
@@ -42,7 +42,7 @@ public:
       s = (a == std::string::npos) ? "" : s.substr(a, b - a + 1);
     };
     trim(link_name_); trim(frame_id_); trim(topic_); trim(param_ns_);
-    if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
+    //if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
 
     // YAML overrides
     getParam("link_name",   link_name_);

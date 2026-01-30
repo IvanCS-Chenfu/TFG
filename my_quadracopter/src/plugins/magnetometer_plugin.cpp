@@ -23,7 +23,7 @@ public:
     // SDF defaults
     link_name_   = sdf->Get<std::string>("link_name_mag", "base_link").first;
     frame_id_    = sdf->Get<std::string>("frame_id_mag",  link_name_).first;
-    topic_       = sdf->Get<std::string>("topic_mag",     "/mag/field").first;
+    topic_       = sdf->Get<std::string>("topic_mag",     "sensor/mag").first;
     update_rate_ = sdf->Get<double>("update_rate_mag",    100.0).first;
 
     // Campo en WORLD
@@ -42,7 +42,7 @@ public:
       s = (a == std::string::npos) ? "" : s.substr(a, b - a + 1);
     };
     trim(link_name_); trim(frame_id_); trim(topic_); trim(param_ns_);
-    if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
+    //if (!topic_.empty() && topic_.front() != '/') topic_ = "/" + topic_;
 
     // YAML overrides
     getParam("link_name",   link_name_);

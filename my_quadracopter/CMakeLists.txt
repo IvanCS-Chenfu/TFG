@@ -19,6 +19,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(rosidl_default_runtime REQUIRED)
 
 
 
@@ -32,7 +33,7 @@ endif()
 
 # 📂 Instalar carpetas de recursos
 install(DIRECTORY
-  launch urdf worlds config
+  launch urdf worlds config models
   DESTINATION share/${PROJECT_NAME}/
 )
 
@@ -247,6 +248,7 @@ target_link_libraries(test_tray_launcher      ${cpp_typesupport_target})
 
 add_dependencies(test_tray_launcher test_gen_tray test_fuerzas_gt test_calcular_rd ${cpp_typesupport_target})
 
-
+install(PROGRAMS src/tests/test_traygui_launcher.py DESTINATION lib/${PROJECT_NAME})
+ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()

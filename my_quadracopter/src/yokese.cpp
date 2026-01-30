@@ -72,7 +72,6 @@ else
 
 
 // COSAS PARA MAÑANA
-// Acceso Máster
 // Dejar los programas limpios y Publicar en Github (Mejorar el nodo action para que pueda llamrlo varias veces)
 // Eliminar el Ground Truth y Estimar con sensores
 // Limpiar nuevos programas y Publicar en Github
@@ -82,3 +81,16 @@ else
 // Ver que hago con mi vida
 // Volver al curso y ponerme al día
 // Ayudar a Álvaro
+
+
+
+
+/*
+Tengo que hacer que desde el launch se lancen todos los nodos "n" veces siendo "n" el numero de drones.
+
+Esto modifica el sim_quadcopter, el cual asignará un nombre a cada dron.
+
+Cada nodo en el launch tendrá como parámetro el id /drone_i/
+
+El launcher llama al nodo que abre las pestañas y ese llama a la acción la cual depende del dron elegido
+*/
