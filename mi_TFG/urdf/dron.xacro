@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<robot name="my_quadracopter" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Propiedades Obtenidas desde "generador_URDF" -->
+    <xacro:arg name="fisico_cuerpo_dim" default="0.2 0.2 0.05"/>
+    <xacro:arg name="fisico_cuerpo_color" default="White"/>
+    <xacro:arg name="fisico_cuerpo_masa" default="1.0"/>
+    <xacro:arg name="fisico_cuerpo_matriz_inercia" default="1e-4 1e-4 1e-4 0 0 0"/>
+
+    <xacro:arg name="fisico_brazos_numero" default="4"/>
+    <xacro:arg name="fisico_brazos_grados" default="45"/>
+    <xacro:arg name="fisico_brazos_dim" default="0.2 0.01"/>
+    <xacro:arg name="fisico_brazos_color" default="Gray"/>
+    <xacro:arg name="fisico_brazos_masa" default="0.05"/>
+    <xacro:arg name="fisico_brazos_matriz_inercia" default="1e-5 1e-5 1e-5 0 0 0"/>
+
+    <xacro:arg name="fisico_motores_dim" default="0.02 0.02"/>
+    <xacro:arg name="fisico_motores_color" default="Red"/>
+    <xacro:arg name="fisico_motores_masa" default="0.05"/>
+    <xacro:arg name="fisico_motores_matriz_inercia" default="1e-5 1e-5 1e-5 0 0 0"/>
+
+    <!-- Se pasa a propiedad para poder hacer cálculos con ella -->
+    <xacro:property name="fisico_cuerpo_dim" value="$(arg fisico_cuerpo_dim)"/>
+    <xacro:property name="fisico_cuerpo_color" value="$(arg fisico_cuerpo_color)"/>
+    <xacro:property name="fisico_cuerpo_masa" value="$(arg fisico_cuerpo_masa)"/>
+    <xacro:property name="fisico_cuerpo_matriz_inercia" value="$(arg fisico_cuerpo_matriz_inercia)"/>
+
+    <xacro:property name="fisico_brazos_numero" value="$(arg fisico_brazos_numero)"/>
+    <xacro:property name="fisico_brazos_grados" value="$(arg fisico_brazos_grados)"/>
+    <xacro:property name="fisico_brazos_dim" value="$(arg fisico_brazos_dim)"/>
+    <xacro:property name="fisico_brazos_color" value="$(arg fisico_brazos_color)"/>
+    <xacro:property name="fisico_brazos_masa" value="$(arg fisico_brazos_masa)"/>
+    <xacro:property name="fisico_brazos_matriz_inercia" value="$(arg fisico_brazos_matriz_inercia)"/>
+
+    <xacro:property name="fisico_motores_dim" value="$(arg fisico_motores_dim)"/>
+    <xacro:property name="fisico_motores_color" value="$(arg fisico_motores_color)"/>
+    <xacro:property name="fisico_motores_masa" value="$(arg fisico_motores_masa)"/>
+    <xacro:property name="fisico_motores_matriz_inercia" value="$(arg fisico_motores_matriz_inercia)"/>
+
+
+    <!-- Materiales -->
+    <material name="White"><color rgba="1.0 1.0 1.0 1.0"/></material>
+    <material name="Gray"><color rgba="0.5 0.5 0.5 1.0"/></material>
+    <material name="Red"><color rgba="1.0 0.0 0.0 1.0"/></material>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Cuerpo central -->
+    <link name="cuerpo">
+        <visual>
+            <geometry><box size="${fisico_cuerpo_dim}"/></geometry>
+            <material name="${fisico_cuerpo_color}"/>
+        </visual>
+        <collision>
+            <geometry><box size="${fisico_cuerpo_dim}"/></geometry>
+        </collision>
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="${fisico_cuerpo_matriz_inercia.split()[0]}" iyy="${fisico_cuerpo_matriz_inercia.split()[1]}" izz="${fisico_cuerpo_matriz_inercia.split()[2]}" ixy="${fisico_cuerpo_matriz_inercia.split()[3]}" ixz="${fisico_cuerpo_matriz_inercia.split()[4]}" iyz="${fisico_cuerpo_matriz_inercia.split()[5]}"/>
+        </inertial>
+    </link>
+    <gazebo reference="cuerpo">
+        <material>Gazebo/${fisico_cuerpo_color}</material>
+    </gazebo>
+
+    <!-- MACRO Link Brazo -->
+    <xacro:macro name="link_arm" params="name">
+        <link name="${name}_arm">
+            <visual>
+                <geometry><cylinder length="${fisico_brazos_dim.split()[0]}" radius="${fisico_brazos_dim.split()[1]}"/></geometry>
+                <material name="${fisico_brazos_color}"/>
+            </visual>
+            <collision>
+                <geometry><cylinder length="${fisico_brazos_dim.split()[0]}" radius="${fisico_brazos_dim.split()[1]}"/></geometry>
+            </collision>
+            <inertial>
+                <mass value="${fisico_brazos_masa}"/>
+                <inertia ixx="${fisico_brazos_matriz_inercia.split()[0]}" iyy="${fisico_brazos_matriz_inercia.split()[1]}" izz="${fisico_brazos_matriz_inercia.split()[2]}" ixy="${fisico_brazos_matriz_inercia.split()[3]}" ixz="${fisico_brazos_matriz_inercia.split()[4]}" iyz="${fisico_brazos_matriz_inercia.split()[5]}"/>
+            </inertial>
+        </link>
+        <gazebo reference="${name}_arm">
+            <material>Gazebo/${fisico_brazos_color}</material>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- MACRO Joint Cuerpo - Brazo -->
+    <xacro:macro name="joint_cuerpo_brazo" params="name xyz rpy">
+        <joint name="joint_${name}_arm" type="fixed">
+            <parent link="cuerpo"/>
+            <child link="${name}_arm"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- MACRO Link Motor -->
+    <xacro:macro name="link_motor" params="name">
+        <link name="${name}_motor">
+            <visual>
+                <geometry><cylinder length="${fisico_motores_dim.split()[0]}" radius="${fisico_motores_dim.split()[1]}"/></geometry>
+                <material name="${fisico_motores_color}"/>
+            </visual>
+            <collision>
+                <geometry><cylinder length="${fisico_motores_dim.split()[0]}" radius="${fisico_motores_dim.split()[1]}"/></geometry>
+            </collision>
+            <inertial>
+                <mass value="${fisico_motores_masa}"/>
+                <inertia ixx="${fisico_motores_matriz_inercia.split()[0]}" iyy="${fisico_motores_matriz_inercia.split()[1]}" izz="${fisico_motores_matriz_inercia.split()[2]}" ixy="${fisico_motores_matriz_inercia.split()[3]}" ixz="${fisico_motores_matriz_inercia.split()[4]}" iyz="${fisico_motores_matriz_inercia.split()[5]}"/>
+            </inertial>
+        </link>
+        <gazebo reference="${name}_motor">
+            <material>Gazebo/${fisico_motores_color}</material>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- MACRO Joint Brazo - Motor -->
+    <xacro:macro name="joint_brazo_motor" params="name xyz rpy">
+        <joint name="joint_${name}_motor" type="continuous">
+            <parent link="${name}_arm"/>
+            <child link="${name}_motor"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <axis xyz="0 0 1"/>
+            <dynamics damping="0.01" friction="1.5"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- MACRO Total: Cuerpo, Brazo, Motor -->
+    <xacro:macro name="brazo_total" params="name yaw">
+        <xacro:property name="ox" value="${0.5 * float(fisico_brazos_dim.split()[0]) * cos(yaw)}"/>
+        <xacro:property name="oy" value="${0.5 * float(fisico_brazos_dim.split()[0]) * sin(yaw)}"/>
+
+        <xacro:link_arm name="${name}"/>
+        <xacro:joint_cuerpo_brazo name="${name}" xyz="${ox} ${oy} 0" rpy="0 ${pi/2} ${yaw}"/>
+        <xacro:link_motor name="${name}"/>
+        <xacro:joint_brazo_motor name="${name}" xyz="${0.5 * (-float(fisico_motores_dim.split()[0]) - float(fisico_brazos_dim.split()[1]))} 0 ${0.5 * float(fisico_brazos_dim.split()[0])}" rpy="0 ${-pi/2} 0"/>
+        
+    </xacro:macro>
+
+
+
+
+
+
+    <!-- MACRO 4 Brazos -->
+    <xacro:if value="${fisico_brazos_numero == 4}">
+        <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="abajo_izquierda" yaw="${pi - fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+    </xacro:if>
+
+    <!-- MACRO 6 Brazos -->
+    <xacro:if value="${fisico_brazos_numero == 6}">
+        <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="izquierda" yaw="${pi/2}"/>
+        <xacro:brazo_total name="abajo_izquierda" yaw="${pi - fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="derecha" yaw="${-pi/2}"/>
+        <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+    </xacro:if>
+
+    <!-- MACRO 8 Brazos -->
+    <xacro:if value="${fisico_brazos_numero == 8}">
+        <xacro:brazo_total name="arriba" yaw="0"/>
+        <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="izquierda" yaw="${pi/2}"/>
+        <xacro:brazo_total name="abajo_izquierda" yaw="${pi - fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="abajo" yaw="${pi}"/>
+        <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
+        <xacro:brazo_total name="derecha" yaw="${-pi/2}"/>
+        <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+    </xacro:if>
+</robot>

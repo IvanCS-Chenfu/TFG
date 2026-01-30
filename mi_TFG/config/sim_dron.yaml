@@ -1,0 +1,4 @@
+generador_URDF:
+  ros__parameters:
+    dron.numero: 4
+    dron.nombre_base: "dron" 
