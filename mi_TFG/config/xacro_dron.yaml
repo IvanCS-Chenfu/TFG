@@ -1,4 +1,4 @@
-generador_URDF:
+/**:
   ros__parameters:
     fisico.cuerpo.dim: [0.2, 0.2, 0.05] # [x, y, z] en metros
     fisico.cuerpo.color: "White"      # Empezando en mayúscula
@@ -14,7 +14,7 @@ generador_URDF:
     fisico.brazos.masa: 0.05          # en kg
     fisico.brazos.matriz_inercia: [1e-5, 1e-5, 1e-5, 0.0, 0.0, 0.0]  # [ixx, iyy izz, ixy, ixz, iyz]
     
-    fisico.motores.dim: [0.02, 0.02]     # altura y radio en metros
+    fisico.motores.dim: [0.01, 0.02]     # altura y radio en metros
     fisico.motores.color: "Green"       # Empezando en mayúscula
 
     fisico.motores.masa: 0.05         # en kg
@@ -22,8 +22,9 @@ generador_URDF:
 
 
 
+    actuadores.conversor.fuerza2torque: 0.02
 
-
+    sensores.ground_truth.publish_rate: 50.0
     sensores.camara.estereo: true     # true: estéreo || false: mono
     
 

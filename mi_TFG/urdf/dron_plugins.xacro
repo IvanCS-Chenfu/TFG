@@ -19,6 +19,10 @@
     <xacro:arg name="fisico_motores_masa" default="0.05"/>
     <xacro:arg name="fisico_motores_matriz_inercia" default="1e-5 1e-5 1e-5 0 0 0"/>
 
+    <xacro:arg name="actuadores_conversor_fuerza2torque" default="0.02"/>
+    
+    <xacro:arg name="sensores_ground_truth_publish_rate" default="50.0"/>
+
     <!-- Se pasa a propiedad para poder hacer cálculos con ella -->
     <xacro:property name="fisico_cuerpo_dim" value="$(arg fisico_cuerpo_dim)"/>
     <xacro:property name="fisico_cuerpo_color" value="$(arg fisico_cuerpo_color)"/>
@@ -36,6 +40,10 @@
     <xacro:property name="fisico_motores_color" value="$(arg fisico_motores_color)"/>
     <xacro:property name="fisico_motores_masa" value="$(arg fisico_motores_masa)"/>
     <xacro:property name="fisico_motores_matriz_inercia" value="$(arg fisico_motores_matriz_inercia)"/>
+
+    <xacro:property name="actuadores_conversor_fuerza2torque" value="$(arg actuadores_conversor_fuerza2torque)"/>
+
+    <xacro:property name="sensores_ground_truth_publish_rate" value="$(arg sensores_ground_truth_publish_rate)"/>
 
 
     <!-- Materiales -->
@@ -151,24 +159,71 @@
 
     <!-- MACRO 4 Brazos -->
     <xacro:if value="${fisico_brazos_numero == 4}">
+        <!-- Crear Brazos -->
         <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="abajo_izquierda" yaw="${pi - fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+
+        <!-- Plugin Motores -->
+        <gazebo> 
+            <plugin name="plugin_actuar_motores" filename="libplugin_actuar_motores.so">
+                <motor1>arriba_izquierda_motor</motor1>
+                <topic1>motor/arr_iz</topic1>
+
+                <motor2>abajo_izquierda_motor</motor2>
+                <topic2>motor/ab_iz</topic2>
+
+                <motor3>abajo_derecha_motor</motor3>
+                <topic3>motor/ab_der</topic3>
+
+                <motor4>arriba_derecha_motor</motor4>
+                <topic4>motor/arr_der</topic4>
+
+                <fuerza2torque>${actuadores_conversor_fuerza2torque}</fuerza2torque>
+            </plugin>
+        </gazebo>
     </xacro:if>
 
     <!-- MACRO 6 Brazos -->
     <xacro:if value="${fisico_brazos_numero == 6}">
+        <!-- Crear Brazos -->
         <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="izquierda" yaw="${pi/2}"/>
         <xacro:brazo_total name="abajo_izquierda" yaw="${pi - fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="derecha" yaw="${-pi/2}"/>
         <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+
+        <!-- Plugin Motores -->
+        <gazebo> 
+            <plugin name="plugin_actuar_motores" filename="libplugin_actuar_motores.so">
+                <motor1>arriba_izquierda_motor</motor1>
+                <topic1>motor/arr_iz</topic1>
+
+                <motor2>izquierda_motor</motor2>
+                <topic2>motor/iz</topic2>
+
+                <motor3>abajo_izquierda_motor</motor3>
+                <topic3>motor/ab_iz</topic3>
+
+                <motor4>abajo_derecha_motor</motor4>
+                <topic4>motor/ab_der</topic4>
+
+                <motor5>derecha_motor</motor5>
+                <topic5>motor/der</topic5>
+
+                <motor6>arriba_derecha_motor</motor6>
+                <topic6>motor/arr_der</topic6>
+
+                <fuerza2torque>${actuadores_conversor_fuerza2torque}</fuerza2torque>
+            </plugin>
+        </gazebo>
     </xacro:if>
 
     <!-- MACRO 8 Brazos -->
     <xacro:if value="${fisico_brazos_numero == 8}">
+        <!-- Crear Brazos -->
         <xacro:brazo_total name="arriba" yaw="0"/>
         <xacro:brazo_total name="arriba_izquierda" yaw="${fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="izquierda" yaw="${pi/2}"/>
@@ -177,5 +232,67 @@
         <xacro:brazo_total name="abajo_derecha" yaw="${pi + fisico_brazos_grados/180*pi}"/>
         <xacro:brazo_total name="derecha" yaw="${-pi/2}"/>
         <xacro:brazo_total name="arriba_derecha" yaw="${- fisico_brazos_grados/180*pi}"/>
+
+        <!-- Plugin Motores -->
+        <gazebo> 
+            <plugin name="plugin_actuar_motores" filename="libplugin_actuar_motores.so">
+                <motor1>arriba_motor</motor1>
+                <topic1>motor/arr</topic1>
+
+                <motor2>arriba_izquierda_motor</motor2>
+                <topic2>motor/arr_iz</topic2>
+
+                <motor3>izquierda_motor</motor3>
+                <topic3>motor/iz</topic3>
+
+                <motor4>abajo_izquierda_motor</motor4>
+                <topic4>motor/ab_iz</topic4>
+
+                <motor5>abajo_motor</motor5>
+                <topic5>motor/ab</topic5>
+
+                <motor6>abajo_derecha_motor</motor6>
+                <topic6>motor/ab_der</topic6>
+
+                <motor7>derecha_motor</motor7>
+                <topic7>motor/der</topic7>
+
+                <motor8>arriba_derecha_motor</motor8>
+                <topic8>motor/arr_der</topic8>
+
+                <fuerza2torque>${actuadores_conversor_fuerza2torque}</fuerza2torque>
+            </plugin>
+        </gazebo>
     </xacro:if>
+
+
+
+
+
+
+
+
+
+
+    <!-- Plugin GroundTruth -->
+    <gazebo> 
+        <plugin name="plugin_sensor_groundtrurh" filename="libplugin_sensor_groundtrurh.so">
+            <link_name>cuerpo</link_name>
+
+            <topic_pose>sensor/GT/pose</topic_pose>
+            <topic_vel>sensor/GT/vel</topic_vel>
+            <topic_acc>sensor/GT/acc</topic_acc>
+
+            <publish_rate>${sensores_ground_truth_publish_rate}</publish_rate>
+            <frame_id>world</frame_id>
+            <frame_propio>false</frame_propio>
+        </plugin>
+    </gazebo>
+
+
+
+
+
+
+
 </robot>

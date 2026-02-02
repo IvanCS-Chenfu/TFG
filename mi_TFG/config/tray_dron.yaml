@@ -1,0 +1,28 @@
+/**:
+  ros__parameters:
+    # !Cuidado con poner trayy xacro juntos: mismo nombre!
+    fisico.cuerpo.masa: 1.4                                           # en kg (total del dron: brazos + motores + cuerpo)
+    fisico.cuerpo.matriz_inercia: [1e-4, 1e-4, 1e-4, 0.0, 0.0, 0.0]   # [ixx, iyy izz, ixy, ixz, iyz] (total del dron: brazos + motores + cuerpo)
+
+    fisico.brazos.longitud: 1.4               # en m (respecto al centro del cuerpo) 
+    fisico.brazos.grados: 45.0                # grados respecto al frente 
+
+    fisico.constante.gravedad: -9.81          # en m/s²
+
+    
+    control.fuerza.kp: 2.5
+    control.fuerza.kv: 5.0
+
+    control.torque.kr: 0.5
+    control.torque.kw: 0.5
+
+
+    actuadores.conversor.fuerza2torque: 0.02
+
+
+    control.tray.usar_veltrap: 'true'      # necesita ser string
+
+
+    crear.tray.v_max_lin: 0.8
+    crear.tray.v_max_ang: 0.5
+    crear.tray.t_a: 5.0

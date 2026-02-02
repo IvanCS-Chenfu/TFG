@@ -1,0 +1,18 @@
+# entrada
+geometry_msgs/PoseStamped target_pose
+float32 tx
+float32 ty
+float32 tz
+float32 tyaw
+---
+# salida
+bool success
+float32 t_total
+---
+# Feedback
+float32 t_act
+# Para cada eje: [pos, vel, acc, jerk, ratio]  (5 elementos)
+std_msgs/Float64MultiArray x
+std_msgs/Float64MultiArray y
+std_msgs/Float64MultiArray z
+std_msgs/Float64MultiArray yaw
