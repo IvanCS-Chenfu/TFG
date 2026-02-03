@@ -16,20 +16,20 @@
     
     fisico.motores.dim: [0.01, 0.02]     # altura y radio en metros
     fisico.motores.color: "Green"       # Empezando en mayúscula
-
     fisico.motores.masa: 0.05         # en kg
     fisico.motores.matriz_inercia: [1e-5, 1e-5, 1e-5, 0.0, 0.0, 0.0] # [ixx, iyy izz, ixy, ixz, iyz]
 
+    fisico.camara.dim: [0.005, 0.01, 0.01]     # [x, y, z] en metros
+    fisico.camara.color: "Yellow"       # Empezando en mayúscula
+    fisico.camara.masa: 0.00         # en kg
+    fisico.camara.matriz_inercia: [1e-6, 1e-6, 1e-6, 0.0, 0.0, 0.0] # [ixx, iyy izz, ixy, ixz, iyz]
 
 
     actuadores.conversor.fuerza2torque: 0.02
 
+
     sensores.ground_truth.publish_rate: 50.0
-    sensores.camara.estereo: true     # true: estéreo || false: mono
-    
 
-
-
-
-    plugin.camara.topico.imagen: "sensor/camera/image_raw"
-    plugin.camara.topico.info: "sensor/camera/camera_info"
+    sensores.camara.porcentaje_estereo: 0.3     # 0.0: mono
+    sensores.camara.publish_rate: 30.0
+    sensores.camara.mostrar_gazebo: "false"  # tiene que ser un string

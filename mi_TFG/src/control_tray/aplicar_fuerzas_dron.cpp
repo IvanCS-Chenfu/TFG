@@ -57,22 +57,17 @@ class Clase_Publisher : public rclcpp::Node
         {
             Eigen::Matrix4d A_{Eigen::Matrix4d::Zero()};
 
-            double s1 = std::sin(angulo_giro), c1 = std::cos(angulo_giro);
-            double s2 = std::sin(M_PI - angulo_giro), c2 = std::cos(M_PI - angulo_giro);
-            double s3 = std::sin(M_PI + angulo_giro), c3 = std::cos(M_PI + angulo_giro);
-            double s4 = std::sin(-angulo_giro), c4 = std::cos(-angulo_giro);
-
             A_.setZero();
             A_.row(0) << 1, 1, 1, 1;
-            A_(1,0) =  longitud_brazo*s1;
-            A_(1,1) =  longitud_brazo*s2;
-            A_(1,2) =  longitud_brazo*s3;
-            A_(1,3) =  longitud_brazo*s4;
+            A_(1,0) =  longitud_brazo*std::cos(angulo_giro);
+            A_(1,1) =  longitud_brazo*std::cos(angulo_giro);
+            A_(1,2) = -longitud_brazo*std::cos(angulo_giro);
+            A_(1,3) = -longitud_brazo*std::cos(angulo_giro);
 
-            A_(2,0) = -longitud_brazo*c1;
-            A_(2,1) = -longitud_brazo*c2;
-            A_(2,2) = -longitud_brazo*c3;
-            A_(2,3) = -longitud_brazo*c4;
+            A_(2,0) = -longitud_brazo*std::sin(angulo_giro);
+            A_(2,1) =  longitud_brazo*std::sin(angulo_giro);
+            A_(2,2) =  longitud_brazo*std::sin(angulo_giro);
+            A_(2,3) = -longitud_brazo*std::sin(angulo_giro);
 
             A_(3,0) = -1.0*fuerza2torque;
             A_(3,1) = 1.0*fuerza2torque;

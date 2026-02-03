@@ -67,7 +67,8 @@ class Clase_Publisher : public rclcpp::Node
         {
             x_dot << msg->twist.linear.x, msg->twist.linear.y, msg->twist.linear.z;
 
-            Vector3d w_world(msg->twist.angular.x, msg->twist.angular.y, msg->twist.angular.z);
+            // Pasar la velocidad del sistema "world" al sistema "body"
+            Vector3d w_world(msg->twist.angular.x, msg->twist.angular.y, msg->twist.angular.z); 
             w_b = R_act.transpose()*w_world;
         }
 
@@ -138,6 +139,7 @@ class Clase_Publisher : public rclcpp::Node
                 Vector3d eje_x_dot = eje_y_dot.cross(eje_z) + eje_y.cross(eje_z_dot);
                 Vector3d eje_x_ddot = eje_y_ddot.cross(eje_z) + 2*eje_y_dot.cross(eje_z_dot) + eje_y.cross(eje_z_ddot);
 
+                // Todo desde Cuerpo
                 Matrix3d R_des;
                 Matrix3d R_dot_des;
                 Matrix3d R_ddot_des;
@@ -160,7 +162,7 @@ class Clase_Publisher : public rclcpp::Node
                         inercia[3], inercia[1], inercia[5],
                         inercia[4], inercia[5], inercia[2];
 
-                Vector3d tau_des = -Kr*er - Kw*ew + J*R_act.transpose()*R_des*Omega_dot_des+ w_b.cross(J*w_b);
+                Vector3d tau_des = -Kr*er - Kw*ew + J*R_act.transpose()*R_des*Omega_dot_des+ w_b.cross(J*w_b);  // Desde Cuerpo
 
 
                 // Enviar Fuerza y Torque

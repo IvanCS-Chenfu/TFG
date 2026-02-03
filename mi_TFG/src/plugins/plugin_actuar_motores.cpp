@@ -66,7 +66,7 @@ public:
             this->OnWrench(i, msg);
         });
 
-        RCLCPP_INFO(ros_node_->get_logger(),"Subscrito a [%s] para aplicar wrench en [%s]", topic_names_[i].c_str(), link_names_[i].c_str());
+        RCLCPP_INFO(ros_node_->get_logger(),"Suscrito a [%s] para aplicar wrench en [%s]", topic_names_[i].c_str(), link_names_[i].c_str());
       }
     }
 

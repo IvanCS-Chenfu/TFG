@@ -1,5 +1,5 @@
 /**:
   ros__parameters:
-    dron.numero: 4
+    dron.numero: 1
     dron.namespace_base: "dron" 
     dron.spawn_box: [-5.0, 5.0, -5.0, 5.0] # [x1, x2, y1, y2] en metros

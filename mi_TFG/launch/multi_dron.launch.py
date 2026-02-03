@@ -4,6 +4,9 @@ from launch_ros.actions import PushRosNamespace, Node
 
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+from launch.substitutions import PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
+
 import yaml
 import os
 from ament_index_python.packages import get_package_share_directory
@@ -31,8 +34,11 @@ def generate_launch_description():
                                         get_package_share_directory('mi_tfg'), 'launch', 'generar_dron.launch.py'
                                         )
     
-
-
+    ## Obtener path del world
+    world_path = PathJoinSubstitution  ([
+                                            FindPackageShare('mi_tfg'), 'worlds', 'house_1.world'
+                                        ])
+    
     ## Abrir gazebo y llamar al launch "n" veces
     ld = LaunchDescription()
     
@@ -41,7 +47,7 @@ def generate_launch_description():
                     (
                         cmd=[
                             'gazebo',
-                            '--verbose',
+                            '--verbose', world_path,
                             '-s', 'libgazebo_ros_factory.so'],
                         output='screen'
                     )

@@ -187,13 +187,16 @@ class Clase_Servicio_Accion : public rclcpp::Node
             msg.data.resize(5);
             
             double tt  = t;
+            int a_cero;         // Para que los valores sean 0 en el instante final
             if (c.tf > t)
             {
                 tt  = t;
+                a_cero = 1;
             }
             else
             {
                 tt  = c.tf;
+                a_cero = 0;
             }
 
             double p, v, a, j = 0;
@@ -225,9 +228,9 @@ class Clase_Servicio_Accion : public rclcpp::Node
             }
 
             msg.data[0]  = p;
-            msg.data[1]  = v;
-            msg.data[2]  = a;
-            msg.data[3] = j;
+            msg.data[1]  = a_cero*v;
+            msg.data[2]  = a_cero*a;
+            msg.data[3] = a_cero*j;
             msg.data[4] = (tt / c.tf) * 100.0;
 
             return msg;

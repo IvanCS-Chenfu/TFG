@@ -19,9 +19,18 @@
     <xacro:arg name="fisico_motores_masa" default="0.05"/>
     <xacro:arg name="fisico_motores_matriz_inercia" default="1e-5 1e-5 1e-5 0 0 0"/>
 
+    <xacro:arg name="fisico_camara_dim" default="0.005 0.01 0.01"/>
+    <xacro:arg name="fisico_camara_color" default="Yellow"/>
+    <xacro:arg name="fisico_camara_masa" default="0.01"/>
+    <xacro:arg name="fisico_camara_matriz_inercia" default="1e-6 1e-6 1e-6 0 0 0"/>
+
     <xacro:arg name="actuadores_conversor_fuerza2torque" default="0.02"/>
     
     <xacro:arg name="sensores_ground_truth_publish_rate" default="50.0"/>
+
+    <xacro:arg name="sensores_camara_porcentaje_estereo" default= "0.3"/>
+    <xacro:arg name="sensores_camara_publish_rate" default= "30.0"/>
+    <xacro:arg name="sensores_camara_mostrar_gazebo" default= "false"/>
 
     <!-- Se pasa a propiedad para poder hacer cálculos con ella -->
     <xacro:property name="fisico_cuerpo_dim" value="$(arg fisico_cuerpo_dim)"/>
@@ -41,15 +50,27 @@
     <xacro:property name="fisico_motores_masa" value="$(arg fisico_motores_masa)"/>
     <xacro:property name="fisico_motores_matriz_inercia" value="$(arg fisico_motores_matriz_inercia)"/>
 
+    <xacro:property name="fisico_camara_dim" value="$(arg fisico_camara_dim)"/>
+    <xacro:property name="fisico_camara_color" value="$(arg fisico_camara_color)"/>
+    <xacro:property name="fisico_camara_masa" value="$(arg fisico_camara_masa)"/>
+    <xacro:property name="fisico_camara_matriz_inercia" value="$(arg fisico_camara_matriz_inercia)"/>
+
     <xacro:property name="actuadores_conversor_fuerza2torque" value="$(arg actuadores_conversor_fuerza2torque)"/>
 
     <xacro:property name="sensores_ground_truth_publish_rate" value="$(arg sensores_ground_truth_publish_rate)"/>
+
+    <xacro:property name="sensores_camara_porcentaje_estereo" value="$(arg sensores_camara_porcentaje_estereo)"/>
+    <xacro:property name="sensores_camara_publish_rate" value="$(arg sensores_camara_publish_rate)"/>
+    <xacro:property name="sensores_camara_mostrar_gazebo" value="$(arg sensores_camara_mostrar_gazebo)"/>
 
 
     <!-- Materiales -->
     <material name="White"><color rgba="1.0 1.0 1.0 1.0"/></material>
     <material name="Gray"><color rgba="0.5 0.5 0.5 1.0"/></material>
     <material name="Red"><color rgba="1.0 0.0 0.0 1.0"/></material>
+    <material name="Green"><color rgba="0.0 1.0 0.0 1.0"/></material>
+    <material name="Magenta"><color rgba="1.0 0.0 0.5 1.0"/></material>
+    <material name="Yellow"><color rgba="0.0 1.0 1.0 1.0"/></material>
 
 
 
@@ -293,6 +314,102 @@
 
 
 
+
+
+
+    <!-- MACRO Link Camara -->
+    <xacro:macro name="link_camara" params="name">
+        <link name="camara_${name}">
+            <visual>
+                <geometry><box size="${fisico_camara_dim}"/></geometry>
+                <material name="${fisico_camara_color}"/>
+            </visual>
+            <collision>
+                <geometry><box size="${fisico_camara_dim}"/></geometry>
+            </collision>
+            <inertial>
+                <mass value="${fisico_camara_masa}"/>
+                <inertia ixx="${fisico_camara_matriz_inercia.split()[0]}" iyy="${fisico_camara_matriz_inercia.split()[1]}" izz="${fisico_camara_matriz_inercia.split()[2]}" ixy="${fisico_camara_matriz_inercia.split()[3]}" ixz="${fisico_camara_matriz_inercia.split()[4]}" iyz="${fisico_camara_matriz_inercia.split()[5]}"/>
+            </inertial>
+        </link>
+        <gazebo reference="camara_${name}">
+            <material>Gazebo/${fisico_camara_color}</material>
+        </gazebo>
+
+        <gazebo reference="camara_${name}">
+            <sensor name="sensor/camera_${name}" type="camera">
+                <always_on>true</always_on>         <!-- Si "true": El tópico funciona aunque nadie se suscriba -->
+                <update_rate>${sensores_camara_publish_rate}</update_rate>       <!-- FPS -->
+                <visualize>${sensores_camara_mostrar_gazebo}</visualize>         <!-- Muestra lo que ve en gazebo -->
+                <pose>0 0 0 0 0 0</pose>            <!-- Pose respecto al link -->
+
+                <camera>
+                    <horizontal_fov>1.3962634</horizontal_fov>      <!-- Campo de visión: 80º aprox -->
+                    <image>
+                        <width>640</width>
+                        <height>480</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.05</near>       <!-- Distancia mínima a la que el sensor empieza a ver -->
+                        <far>50.0</far>         <!-- Distancia máxima a la que el sensor deja de ver -->
+                    </clip>
+                </camera>
+
+                <!-- SOLO Gazebo Classic -->
+                <plugin name="camera_controller_${name}" filename="libgazebo_ros_camera.so">
+                    <robotNamespace>/</robotNamespace>
+
+                    <cameraName>camara_${name}</cameraName>
+
+                    <imageTopicName>sensor/camara_${name}/image_raw</imageTopicName>
+                    <cameraInfoTopicName>sensor/camara_${name}/camera_info</cameraInfoTopicName>
+
+                    <frameName>camara_${name}</frameName>
+                </plugin>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- MACRO Joint Cuerpo - Camara (mono)-->
+    <xacro:macro name="joint_camara_mono" params="name">
+        <xacro:property name="ox" value="${0.5 * float(fisico_cuerpo_dim.split()[0]) - 0.5 * float(fisico_camara_dim.split()[0])}"/>
+        <xacro:property name="oz" value="${0.5 * float(fisico_cuerpo_dim.split()[2]) + 0.5 * float(fisico_camara_dim.split()[2])}"/>
+
+        <joint name="joint_camara_${name}" type="fixed">
+            <parent link="cuerpo"/>
+            <child link="camara_${name}"/>
+            <origin xyz="${ox} 0 ${oz}" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
+    <!-- MACRO Joint Cuerpo - Camara (estereo)-->
+    <xacro:macro name="joint_camara_estereo" params="name derecha">
+        <xacro:property name="ox" value="${0.5 * float(fisico_cuerpo_dim.split()[0]) - 0.5 * float(fisico_camara_dim.split()[0])}"/>
+        <xacro:property name="oz" value="${0.5 * float(fisico_cuerpo_dim.split()[2]) + 0.5 * float(fisico_camara_dim.split()[2])}"/>
+        <xacro:property name="oy" value="${(0.5 * float(fisico_cuerpo_dim.split()[1]) - 0.5 * float(fisico_camara_dim.split()[1]))*derecha*sensores_camara_porcentaje_estereo}"/>
+
+        <joint name="joint_camara_${name}" type="fixed">
+            <parent link="cuerpo"/>
+            <child link="camara_${name}"/>
+            <origin xyz="${ox} ${oy} ${oz}" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
+
+
+
+
+
+
+    <xacro:if value="${sensores_camara_porcentaje_estereo == 0.0}">
+        <xacro:link_camara name="mono"/>
+        <xacro:joint_camara_mono name="mono"/>
+    </xacro:if>
+    <xacro:unless value="${sensores_camara_porcentaje_estereo == 0.0}">
+        <xacro:link_camara name="izq"/>
+        <xacro:joint_camara_estereo name="izq" derecha="-1.0"/>
+        <xacro:link_camara name="der"/>
+        <xacro:joint_camara_estereo name="der" derecha="1.0"/>
+    </xacro:unless>
 
 
 </robot>

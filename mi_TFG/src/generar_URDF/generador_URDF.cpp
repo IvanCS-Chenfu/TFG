@@ -39,9 +39,17 @@ class Clase_Cliente : public rclcpp::Node
             this->declare_parameter<double>("fisico.motores.masa", 0.05);
             this->declare_parameter<std::vector<double>>("fisico.motores.matriz_inercia", {1e-5, 1e-5, 1e-5, 0.0, 0.0, 0.0});
 
+            this->declare_parameter<std::vector<double>>("fisico.camara.dim", {0.005, 0.01, 0.01});
+            this->declare_parameter<std::string>( "fisico.camara.color", "Yellow");
+            this->declare_parameter<double>("fisico.camara.masa", 0.01);
+            this->declare_parameter<std::vector<double>>("fisico.camara.matriz_inercia", {1e-6, 1e-6, 1e-6, 0.0, 0.0, 0.0});
+
             this->declare_parameter<double>("actuadores.conversor.fuerza2torque", 0.02);
 
             this->declare_parameter<double>("sensores.ground_truth.publish_rate", 50.0);
+            this->declare_parameter<double>("sensores.camara.porcentaje_estereo", 0.30);
+            this->declare_parameter<double>("sensores.camara.publish_rate", 30.0);
+            this->declare_parameter<std::string>("sensores.camara.mostrar_gazebo", "false");
 
             this->declare_parameter<int>("dron.numero", 1);
             this->declare_parameter<std::vector<double>>("dron.spawn_box", {-10.0, 10.0, -10.0, 10.0});
@@ -64,9 +72,17 @@ class Clase_Cliente : public rclcpp::Node
             fisico_motores_masa = this->get_parameter("fisico.motores.masa").as_double();
             fisico_motores_matriz_inercia = this->get_parameter("fisico.motores.matriz_inercia").as_double_array();
 
+            fisico_camara_dim = this->get_parameter("fisico.camara.dim").as_double_array();
+            fisico_camara_color = this->get_parameter("fisico.camara.color").as_string();
+            fisico_camara_masa = this->get_parameter("fisico.camara.masa").as_double();
+            fisico_camara_matriz_inercia = this->get_parameter("fisico.camara.matriz_inercia").as_double_array();
+
             actuadores_conversor_fuerza2torque = this->get_parameter("actuadores.conversor.fuerza2torque").as_double();
 
             sensores_ground_truth_publish_rate = this->get_parameter("sensores.ground_truth.publish_rate").as_double();
+            sensores_camara_porcentaje_estereo = this->get_parameter("sensores.camara.porcentaje_estereo").as_double();
+            sensores_camara_publish_rate = this->get_parameter("sensores.camara.publish_rate").as_double();
+            sensores_camara_mostrar_gazebo = this->get_parameter("sensores.camara.mostrar_gazebo").as_string();
 
             dron_numero = this->get_parameter("dron.numero").as_int();
             dron_spawn_box = this->get_parameter("dron.spawn_box").as_double_array();
@@ -168,8 +184,15 @@ class Clase_Cliente : public rclcpp::Node
                 << " fisico_motores_color:=" << fisico_motores_color
                 << " fisico_motores_masa:=" << fisico_motores_masa
                 << " fisico_motores_matriz_inercia:=" << "\"" << fisico_motores_matriz_inercia[0] << " " << fisico_motores_matriz_inercia[1] << " " << fisico_motores_matriz_inercia[2] << " " << fisico_motores_matriz_inercia[3] << " " << fisico_motores_matriz_inercia[4] << " " << fisico_motores_matriz_inercia[5] << "\""
+                << " fisico_camara_dim:=" << "\"" << fisico_camara_dim[0] << " " << fisico_camara_dim[1] << " " << fisico_camara_dim[2] << "\""
+                << " fisico_camara_color:=" << fisico_camara_color
+                << " fisico_camara_masa:=" << fisico_camara_masa
+                << " fisico_camara_matriz_inercia:=" << "\"" << fisico_camara_matriz_inercia[0] << " " << fisico_camara_matriz_inercia[1] << " " << fisico_camara_matriz_inercia[2] << " " << fisico_camara_matriz_inercia[3] << " " << fisico_camara_matriz_inercia[4] << " " << fisico_camara_matriz_inercia[5] << "\""
                 << " actuadores_conversor_fuerza2torque:=" << actuadores_conversor_fuerza2torque
-                << " sensores_ground_truth_publish_rate:=" << sensores_ground_truth_publish_rate;
+                << " sensores_ground_truth_publish_rate:=" << sensores_ground_truth_publish_rate
+                << " sensores_camara_porcentaje_estereo:=" << sensores_camara_porcentaje_estereo
+                << " sensores_camara_publish_rate:=" << sensores_camara_publish_rate
+                << " sensores_camara_mostrar_gazebo:=" << sensores_camara_mostrar_gazebo;
 
             std::string command = "xacro " + xacro_path + args.str();      // Ejecutamos el procesador xacro por terminal
             FILE* pipe = popen(command.c_str(), "r");         // Abrimos el comando como un stream
@@ -213,9 +236,17 @@ class Clase_Cliente : public rclcpp::Node
         double fisico_motores_masa;
         std::vector<double> fisico_motores_matriz_inercia;
 
+        std::vector<double> fisico_camara_dim;
+        std::string fisico_camara_color;
+        double fisico_camara_masa;
+        std::vector<double> fisico_camara_matriz_inercia;
+
         double actuadores_conversor_fuerza2torque;
 
         double sensores_ground_truth_publish_rate;
+        double sensores_camara_porcentaje_estereo;
+        double sensores_camara_publish_rate;
+        std::string sensores_camara_mostrar_gazebo;
 
         std::string name_space;
 

@@ -66,7 +66,7 @@ class Clase_Subscriber : public rclcpp::Node
                 std::vector<std::string> labels = {"x", "y", "z", "yaw"};
 
                 std_msgs::msg::Float64MultiArray enviar;
-                // enviar.data = {x[0], y[0], z[0], yaw[0]};
+                //enviar.data = {x[0], y[0], z[0], yaw[0]};
                 enviar.data = {x[1], y[1], z[1], yaw[1]};
                 objeto_publisher_num->publish(enviar);
 
