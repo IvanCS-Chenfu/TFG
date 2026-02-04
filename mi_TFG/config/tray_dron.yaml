@@ -10,11 +10,11 @@
     fisico.constante.gravedad: -9.81          # en m/s²
 
     
-    control.fuerza.kp: 3.5
-    control.fuerza.kv: 5.0
+    control.fuerza.kp: 2.0
+    control.fuerza.kv: 7.0
 
-    control.torque.kr: 0.3
-    control.torque.kw: 0.3
+    control.torque.kr: 0.1
+    control.torque.kw: 0.1
 
 
     actuadores.conversor.fuerza2torque: 0.02

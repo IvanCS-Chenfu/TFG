@@ -120,8 +120,8 @@ class Clase_Cliente : public rclcpp::Node
 
                 request->reference_frame = "world";
                 
-                double x = 0;
-                double y = 0;
+                double x = 0.0;
+                double y = 0.0;
 
                 if (dron_numero > 1) 
                 {

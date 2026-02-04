@@ -1,5 +1,10 @@
 /**:
   ros__parameters:
-    dron.numero: 1
+    dron.numero: 2
     dron.namespace_base: "dron" 
-    dron.spawn_box: [-5.0, 5.0, -5.0, 5.0] # [x1, x2, y1, y2] en metros
+    dron.spawn_box: [-11.0, -8.0, -10.0, 10.0] # [x1, x2, y1, y2] en metros
+
+    world.activar: "house_1"     
+    
+    orbslam.activar: 'true'           # Necesario string
+    orbslam.estereo: 'true'           # Necesario string

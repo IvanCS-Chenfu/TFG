@@ -337,7 +337,7 @@
         </gazebo>
 
         <gazebo reference="camara_${name}">
-            <sensor name="sensor/camera_${name}" type="camera">
+            <sensor name="sensor/camara_${name}" type="camera">
                 <always_on>true</always_on>         <!-- Si "true": El tópico funciona aunque nadie se suscriba -->
                 <update_rate>${sensores_camara_publish_rate}</update_rate>       <!-- FPS -->
                 <visualize>${sensores_camara_mostrar_gazebo}</visualize>         <!-- Muestra lo que ve en gazebo -->
@@ -383,10 +383,10 @@
         </joint>
     </xacro:macro>
     <!-- MACRO Joint Cuerpo - Camara (estereo)-->
-    <xacro:macro name="joint_camara_estereo" params="name derecha">
+    <xacro:macro name="joint_camara_estereo" params="name izquierda">
         <xacro:property name="ox" value="${0.5 * float(fisico_cuerpo_dim.split()[0]) - 0.5 * float(fisico_camara_dim.split()[0])}"/>
         <xacro:property name="oz" value="${0.5 * float(fisico_cuerpo_dim.split()[2]) + 0.5 * float(fisico_camara_dim.split()[2])}"/>
-        <xacro:property name="oy" value="${(0.5 * float(fisico_cuerpo_dim.split()[1]) - 0.5 * float(fisico_camara_dim.split()[1]))*derecha*sensores_camara_porcentaje_estereo}"/>
+        <xacro:property name="oy" value="${(0.5 * float(fisico_cuerpo_dim.split()[1]) - 0.5 * float(fisico_camara_dim.split()[1]))*izquierda*sensores_camara_porcentaje_estereo}"/>
 
         <joint name="joint_camara_${name}" type="fixed">
             <parent link="cuerpo"/>
@@ -406,9 +406,9 @@
     </xacro:if>
     <xacro:unless value="${sensores_camara_porcentaje_estereo == 0.0}">
         <xacro:link_camara name="izq"/>
-        <xacro:joint_camara_estereo name="izq" derecha="-1.0"/>
+        <xacro:joint_camara_estereo name="izq" izquierda="1.0"/>
         <xacro:link_camara name="der"/>
-        <xacro:joint_camara_estereo name="der" derecha="1.0"/>
+        <xacro:joint_camara_estereo name="der" izquierda="-1.0"/>
     </xacro:unless>
 
 
